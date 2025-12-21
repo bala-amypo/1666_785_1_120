@@ -8,28 +8,20 @@ import java.time.LocalDateTime;
 public class KeyExemption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; [cite: 104]
+    private Long id;
 
     @ManyToOne
-    private ApiKey apiKey; [cite: 105]
+    private ApiKey apiKey;
 
-    private String notes; [cite: 106]
-    private Boolean unlimitedAccess; [cite: 107]
-    private Integer temporaryExtensionLimit; [cite: 108]
-    private LocalDateTime validUntil; [cite: 109]
+    private String notes;
+    private Boolean unlimitedAccess;
+    private Integer temporaryExtensionLimit;
+    private LocalDateTime validUntil;
 
-    public KeyExemption() {} [cite: 111]
+    public KeyExemption() {}
 
-    public KeyExemption(ApiKey apiKey, String notes, Boolean unlimitedAccess, Integer temporaryExtensionLimit, LocalDateTime validUntil) {
-        this.apiKey = apiKey;
-        this.notes = notes;
-        this.unlimitedAccess = unlimitedAccess;
-        this.temporaryExtensionLimit = temporaryExtensionLimit;
-        this.validUntil = validUntil;
-    } [cite: 112]
-
-    // Getters and Setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public ApiKey getApiKey() { return apiKey; }
     public void setApiKey(ApiKey apiKey) { this.apiKey = apiKey; }
     public Integer getTemporaryExtensionLimit() { return temporaryExtensionLimit; }

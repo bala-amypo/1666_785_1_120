@@ -19,21 +19,13 @@ public class ApiKey {
     private QuotaPlan plan;
 
     private Boolean active = true;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public ApiKey() {}
 
-    public ApiKey(String keyValue, Long ownerId, QuotaPlan plan, Boolean active) {
-        this.keyValue = keyValue;
-        this.ownerId = ownerId;
-        this.plan = plan;
-        this.active = active != null ? active : true;
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getKeyValue() { return keyValue; }
+    public void setKeyValue(String keyValue) { this.keyValue = keyValue; }
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
     public QuotaPlan getPlan() { return plan; }
