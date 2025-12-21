@@ -1,11 +1,9 @@
 package com.example.demo.config;
 
-
-import org.springframework.context.annotation.Bean; [cite: 332]
-import org.springframework.context.annotation.Configuration; [cite: 332]
-import org.springframework.security.config.annotation.web.builders.HttpSecurity; [cite: 333]
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity; [cite: 332]
-import org.springframework.security.web.SecurityFilterChain; [cite: 333]
+import org.springframework.context.annotation.Configuration; 
+import org.springframework.security.config.annotation.web.builders.HttpSecurity; 
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity; 
+import org.springframework.security.web.SecurityFilterChain; 
 
 @Configuration
 @EnableWebSecurity
