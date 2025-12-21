@@ -1,10 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.QuotaPlan;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.QuotaPlanRepository;
 import com.example.demo.service.QuotaPlanService;
+import com.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,26 +16,14 @@ public class QuotaPlanServiceImpl implements QuotaPlanService {
     }
 
     @Override
-    public QuotaPlan createPlan(QuotaPlan plan) {
-        if (plan.getDailyLimit() != null && plan.getDailyLimit() <= 0) {
-            throw new BadRequestException("Daily limit must be > 0");
-        }
+    public QuotaPlan createQuotaPlan(QuotaPlan plan) {
         return quotaPlanRepository.save(plan);
     }
 
     @Override
-    public QuotaPlan updatePlan(Long id, QuotaPlan plan) {
-        QuotaPlan existing = getPlanById(id);
-        existing.setName(plan.getName());
-        existing.setDailyLimit(plan.getDailyLimit());
-        existing.setActive(plan.getActive());
-        return quotaPlanRepository.save(existing);
-    }
-
-    @Override
-    public QuotaPlan getPlanById(Long id) {
+    public QuotaPlan getQuotaPlanById(Long id) {
         return quotaPlanRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("QuotaPlan not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Plan not found"));
     }
 
     @Override
@@ -44,11 +31,11 @@ public class QuotaPlanServiceImpl implements QuotaPlanService {
         return quotaPlanRepository.findAll();
     }
 
+    // This fixes the "does not override abstract method deactivateQuotaPlan" error
     @Override
-    public void deletePlan(Long id) {
-        if (!quotaPlanRepository.existsById(id)) {
-            throw new ResourceNotFoundException("QuotaPlan not found");
-        }
-        quotaPlanRepository.deleteById(id);
+    public void deactivateQuotaPlan(Long id) {
+        QuotaPlan plan = getQuotaPlanById(id);
+        plan.setActive(false);
+        quotaPlanRepository.save(plan);
     }
 }
