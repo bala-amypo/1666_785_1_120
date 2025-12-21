@@ -9,17 +9,3 @@ import java.util.Optional;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
     Optional<UserAccount> findByEmail(String email);
 }
-
-public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
-    Optional<ApiKey> findByKeyValue(String keyValue);
-}
-
-public interface ApiUsageLogRepository extends JpaRepository<ApiUsageLog, Long> {
-    List<ApiUsageLog> findByApiKey_Id(Long id);
-    
-    @Query("SELECT u FROM ApiUsageLog u WHERE u.apiKey.id = ?1 AND u.timestamp >= ?2 AND u.timestamp <= ?3")
-    List<ApiUsageLog> findForKeyBetween(Long keyId, Instant start, Instant end);
-
-    @Query("SELECT COUNT(u) FROM ApiUsageLog u WHERE u.apiKey.id = ?1 AND u.timestamp >= ?2 AND u.timestamp <= ?3")
-    int countForKeyBetween(Long keyId, Instant start, Instant end);
-}
