@@ -10,7 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
     public Object filterChain(Object http) { return null; }
     public Object passwordEncoder() { return null; }
 }
