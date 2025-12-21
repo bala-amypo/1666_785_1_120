@@ -8,24 +8,26 @@ import java.time.LocalDateTime;
 public class ApiUsageLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; [cite: 77]
+    private Long id;
 
     @ManyToOne
-    private ApiKey apiKey; [cite: 78]
+    @JoinColumn(name = "api_key_id")
+    private ApiKey apiKey;
 
-    private String endpoint; [cite: 79]
-    private LocalDateTime timestamp; [cite: 80]
+    private String endpoint;
+    private LocalDateTime timestamp;
 
-    public ApiUsageLog() {} [cite: 82]
+    public ApiUsageLog() {}
 
     public ApiUsageLog(ApiKey apiKey, String endpoint, LocalDateTime timestamp) {
         this.apiKey = apiKey;
         this.endpoint = endpoint;
         this.timestamp = timestamp;
-    } [cite: 83]
+    }
 
     // Getters and Setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public ApiKey getApiKey() { return apiKey; }
     public void setApiKey(ApiKey apiKey) { this.apiKey = apiKey; }
     public String getEndpoint() { return endpoint; }

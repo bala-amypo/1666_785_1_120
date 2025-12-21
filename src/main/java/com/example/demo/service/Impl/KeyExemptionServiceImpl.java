@@ -16,6 +16,7 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
     private final KeyExemptionRepository exemptionRepository;
     private final ApiKeyRepository apiKeyRepository;
 
+    // Use Constructor Injection [cite: 17, 162, 281]
     public KeyExemptionServiceImpl(KeyExemptionRepository exemptionRepository, ApiKeyRepository apiKeyRepository) {
         this.exemptionRepository = exemptionRepository;
         this.apiKeyRepository = apiKeyRepository;
@@ -39,18 +40,30 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
     public KeyExemption updateExemption(Long id, KeyExemption exemption) {
         KeyExemption existing = exemptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Exemption not found"));
+        
+        // Ensure validation is applied during update [cite: 289]
+        if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
+            throw new BadRequestException("Invalid extension limit");
+        }
+        if (exemption.getValidUntil() != null && exemption.getValidUntil().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("validUntil must be in the future");
+        }
+
         existing.setTemporaryExtensionLimit(exemption.getTemporaryExtensionLimit());
         existing.setValidUntil(exemption.getValidUntil());
+        existing.setNotes(exemption.getNotes());
+        existing.setUnlimitedAccess(exemption.getUnlimitedAccess());
+        
         return exemptionRepository.save(existing);
     }
 
     @Override
     public Optional<KeyExemption> getExemptionByKey(Long apiKeyId) {
-        return exemptionRepository.findByApiKey_Id(apiKeyId);
+        return exemptionRepository.findByApiKey_Id(apiKeyId); // [cite: 293]
     }
 
     @Override
     public List<KeyExemption> getAllExemptions() {
-        return exemptionRepository.findAll();
+        return exemptionRepository.findAll(); // [cite: 296]
     }
 }
