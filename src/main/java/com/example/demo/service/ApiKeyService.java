@@ -1,0 +1,12 @@
+package com.example.demo.service;
+
+import com.example.demo.entity.ApiKey;
+import java.util.List;
+
+public interface ApiKeyService {
+    ApiKey createApiKey(ApiKey apiKey);
+    ApiKey updateApiKey(Long id, ApiKey apiKey);
+    ApiKey getApiKeyById(Long id);
+    List<ApiKey> getAllApiKeys();
+    void deactivateApiKey(Long id);
+}
