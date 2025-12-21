@@ -13,9 +13,11 @@ import java.util.Optional;
 
 @Service
 public class KeyExemptionServiceImpl implements KeyExemptionService {
+
     private final KeyExemptionRepository exemptionRepository;
     private final ApiKeyRepository apiKeyRepository;
 
+    // MANDATORY: Explicit Constructor for Constructor Injection
     public KeyExemptionServiceImpl(KeyExemptionRepository exemptionRepository, ApiKeyRepository apiKeyRepository) {
         this.exemptionRepository = exemptionRepository;
         this.apiKeyRepository = apiKeyRepository;
@@ -45,15 +47,6 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
         return exemptionRepository.save(existing);
     }
 
-    private void validateExemption(KeyExemption exemption) {
-        if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
-            throw new BadRequestException("Invalid extension limit");
-        }
-        if (exemption.getValidUntil() != null && exemption.getValidUntil().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("validUntil must be in the future");
-        }
-    }
-
     @Override
     public Optional<KeyExemption> getExemptionByKey(Long apiKeyId) {
         return exemptionRepository.findByApiKey_Id(apiKeyId);
@@ -62,5 +55,22 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
     @Override
     public List<KeyExemption> getAllExemptions() {
         return exemptionRepository.findAll();
+    }
+
+    @Override
+    public void deleteExemption(Long id) {
+        if (!exemptionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Exemption not found");
+        }
+        exemptionRepository.deleteById(id);
+    }
+
+    private void validateExemption(KeyExemption exemption) {
+        if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
+            throw new BadRequestException("Invalid extension limit");
+        }
+        if (exemption.getValidUntil() != null && exemption.getValidUntil().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("validUntil must be in the future");
+        }
     }
 }

@@ -1,64 +1,13 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.KeyExemption;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.ApiKeyRepository;
-import com.example.demo.repository.KeyExemptionRepository;
-import com.example.demo.service.KeyExemptionService;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class KeyExemptionServiceImpl implements KeyExemptionService {
-    private final KeyExemptionRepository exemptionRepository;
-    private final ApiKeyRepository apiKeyRepository;
-
-    // Constructor Injection as required by the project rules
-    @Override
-    public KeyExemption createExemption(KeyExemption exemption) {
-        validateExemption(exemption);
-        if (exemption.getApiKey() == null || !apiKeyRepository.existsById(exemption.getApiKey().getId())) {
-            throw new ResourceNotFoundException("ApiKey not found");
-        }
-        return exemptionRepository.save(exemption);
-    }
-
-    @Override
-    public KeyExemption updateExemption(Long id, KeyExemption exemption) {
-        KeyExemption existing = exemptionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Exemption not found"));
-        
-        validateExemption(exemption);
-
-        existing.setNotes(exemption.getNotes());
-        existing.setUnlimitedAccess(exemption.getUnlimitedAccess());
-        existing.setTemporaryExtensionLimit(exemption.getTemporaryExtensionLimit());
-        existing.setValidUntil(exemption.getValidUntil());
-        
-        return exemptionRepository.save(existing);
-    }
-
-    private void validateExemption(KeyExemption exemption) {
-        // Business Rule: Extension limit must be non-negative
-        if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
-            throw new BadRequestException("Invalid extension limit");
-        }
-        // Business Rule: validUntil must be a future date
-        if (exemption.getValidUntil() != null && exemption.getValidUntil().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("validUntil must be in the future");
-        }
-    }
-
-    @Override
-    public Optional<KeyExemption> getExemptionByKey(Long apiKeyId) {
-        return exemptionRepository.findByApiKey_Id(apiKeyId);
-    }
-
-    @Override
-    public List<KeyExemption> getAllExemptions() {
-        return exemptionRepository.findAll();
-    }
+public interface KeyExemptionService {
+    KeyExemption createExemption(KeyExemption exemption);
+    KeyExemption updateExemption(Long id, KeyExemption exemption);
+    Optional<KeyExemption> getExemptionByKey(Long apiKeyId);
+    List<KeyExemption> getAllExemptions();
+    void deleteExemption(Long id);
 }
