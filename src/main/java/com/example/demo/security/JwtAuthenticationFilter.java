@@ -6,5 +6,5 @@ import jakarta.servlet.*;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {} [cite: 447]
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {}
 }
