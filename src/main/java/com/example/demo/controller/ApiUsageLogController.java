@@ -21,17 +21,17 @@ public class ApiUsageLogController {
         return apiUsageLogService.logUsage(log);
     }
 
-    @GET("/key/{keyId}")
+    @GetMapping("/key/{keyId}")
     public List<ApiUsageLog> getUsageForApiKey(@PathVariable Long keyId) {
         return apiUsageLogService.getUsageForApiKey(keyId);
     }
 
-    @GET("/key/{keyId}/today")
+    @GetMapping("/key/{keyId}/today")
     public List<ApiUsageLog> getUsageForToday(@PathVariable Long keyId) {
         return apiUsageLogService.getUsageForToday(keyId);
     }
 
-    @GET("/key/{keyId}/count-today")
+    @GetMapping("/key/{keyId}/count-today")
     public int countRequestsToday(@PathVariable Long keyId) {
         return apiUsageLogService.countRequestsToday(keyId);
     }

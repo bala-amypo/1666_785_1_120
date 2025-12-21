@@ -21,12 +21,12 @@ public class RateLimitEnforcementController {
         return enforcementService.createEnforcement(enforcement);
     }
 
-    @GET("/{id}")
+    @GetMapping("/{id}")
     public RateLimitEnforcement getEnforcementById(@PathVariable Long id) {
         return enforcementService.getEnforcementById(id);
     }
 
-    @GET("/key/{keyId}")
+    @GetMapping("/key/{keyId}")
     public List<RateLimitEnforcement> getEnforcementsForKey(@PathVariable Long keyId) {
         return enforcementService.getEnforcementsForKey(keyId);
     }

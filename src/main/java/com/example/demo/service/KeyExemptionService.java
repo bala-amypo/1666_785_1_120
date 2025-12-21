@@ -17,11 +17,6 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
     private final ApiKeyRepository apiKeyRepository;
 
     // Constructor Injection as required by the project rules
-    public KeyExemptionServiceImpl(KeyExemptionRepository exemptionRepository, ApiKeyRepository apiKeyRepository) {
-        this.exemptionRepository = exemptionRepository;
-        this.apiKeyRepository = apiKeyRepository;
-    }
-
     @Override
     public KeyExemption createExemption(KeyExemption exemption) {
         validateExemption(exemption);

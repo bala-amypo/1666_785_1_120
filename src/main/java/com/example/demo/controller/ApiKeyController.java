@@ -26,12 +26,12 @@ public class ApiKeyController {
         return apiKeyService.updateApiKey(id, apiKey);
     }
 
-    @GET("/{id}")
+    @GetMapping("/{id}")
     public ApiKey getApiKeyById(@PathVariable Long id) {
         return apiKeyService.getApiKeyById(id);
     }
 
-    @GET
+    @GetMapping
     public List<ApiKey> getAllApiKeys() {
         return apiKeyService.getAllApiKeys();
     }
