@@ -16,7 +16,7 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
     private final KeyExemptionRepository exemptionRepository;
     private final ApiKeyRepository apiKeyRepository;
 
-    // Use Constructor Injection [cite: 17, 162, 281]
+    // Use Constructor Injection as required by project rules
     public KeyExemptionServiceImpl(KeyExemptionRepository exemptionRepository, ApiKeyRepository apiKeyRepository) {
         this.exemptionRepository = exemptionRepository;
         this.apiKeyRepository = apiKeyRepository;
@@ -24,12 +24,15 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
 
     @Override
     public KeyExemption createExemption(KeyExemption exemption) {
+        // Validate temporary extension limit must be >= 0
         if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
             throw new BadRequestException("Invalid extension limit");
         }
+        // Validate validUntil must be in the future
         if (exemption.getValidUntil() != null && exemption.getValidUntil().isBefore(LocalDateTime.now())) {
             throw new BadRequestException("validUntil must be in the future");
         }
+        // Verify the associated API key exists
         if (exemption.getApiKey() == null || !apiKeyRepository.existsById(exemption.getApiKey().getId())) {
             throw new ResourceNotFoundException("ApiKey not found");
         }
@@ -38,10 +41,11 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
 
     @Override
     public KeyExemption updateExemption(Long id, KeyExemption exemption) {
+        // Fetch existing exemption or throw exception if not found
         KeyExemption existing = exemptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Exemption not found"));
         
-        // Ensure validation is applied during update [cite: 289]
+        // Ensure validation is applied during update
         if (exemption.getTemporaryExtensionLimit() != null && exemption.getTemporaryExtensionLimit() < 0) {
             throw new BadRequestException("Invalid extension limit");
         }
@@ -49,6 +53,7 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
             throw new BadRequestException("validUntil must be in the future");
         }
 
+        // Update fields with new values
         existing.setTemporaryExtensionLimit(exemption.getTemporaryExtensionLimit());
         existing.setValidUntil(exemption.getValidUntil());
         existing.setNotes(exemption.getNotes());
@@ -59,11 +64,11 @@ public class KeyExemptionServiceImpl implements KeyExemptionService {
 
     @Override
     public Optional<KeyExemption> getExemptionByKey(Long apiKeyId) {
-        return exemptionRepository.findByApiKey_Id(apiKeyId); // [cite: 293]
+        return exemptionRepository.findByApiKey_Id(apiKeyId);
     }
 
     @Override
     public List<KeyExemption> getAllExemptions() {
-        return exemptionRepository.findAll(); // [cite: 296]
+        return exemptionRepository.findAll();
     }
 }
