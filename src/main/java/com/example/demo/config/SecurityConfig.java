@@ -1,9 +1,9 @@
-// package com.example.demo.config;
+package com.example.demo.config;
 
-// import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Configuration;
 
-// @Configuration
-// public class SecurityConfig {
-//     public void passwordEncoder() {}
-//     public void configureHttp() {}
-// }
+@Configuration
+public class SecurityConfig {
+    public void passwordEncoder() {}
+    public void configureHttp() {}
+}
