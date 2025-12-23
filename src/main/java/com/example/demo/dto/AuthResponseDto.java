@@ -16,12 +16,12 @@ public class AuthResponseDto {
     }
 
     // Getters and Setters
-    public String getToken() { return token; }
+    public String getToken() { return null; }
     public void setToken(String token) { this.token = token; }
-    public Long getUserId() { return userId; }
+    public Long getUserId() { return null; }
     public void setUserId(Long userId) { this.userId = userId; }
-    public String getEmail() { return email; }
+    public String getEmail() { return null; }
     public void setEmail(String email) { this.email = email; }
-    public String getRole() { return role; }
+    public String getRole() { return null; }
     public void setRole(String role) { this.role = role; }
 }

@@ -14,10 +14,10 @@ public class RegisterRequestDto {
     }
 
     // Getters and Setters
-    public String getEmail() { return ; }
+    public String getEmail() { return null; }
     public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
+    public String getPassword() { return null; }
     public void setPassword(String password) { this.password = password; }
-    public String getRole() { return role; }
+    public String getRole() { return null; }
     public void setRole(String role) { this.role = role; }
 }
