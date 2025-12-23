@@ -7,4 +7,4 @@ public class SecurityConfig {
     public void passwordEncoder() {}
     public void configureHttp() {}
 }
-In your SecurityConfig.java
+
