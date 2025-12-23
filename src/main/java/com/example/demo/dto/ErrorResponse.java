@@ -18,7 +18,7 @@ public class ErrorResponse {
 
     // Getters
     public LocalDateTime getTimestamp() { return null; }
-    public int getStatus() { return null; }
+    public int getStatus() { return 0 ;}
     public String getMessage() { return null; }
     public String getDetails() { return null; }
 }
