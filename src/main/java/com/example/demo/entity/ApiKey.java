@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 public class ApiKey {
+
     private Long id;
     private String keyValue;
     private boolean active = true;
