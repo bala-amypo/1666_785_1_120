@@ -1,10 +1,11 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.ApiKey; // Corrected package from .model to .entity
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
+import com.example.demo.entity.ApiKey;
+import java.util.*;
 
-public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
-
+public interface ApiKeyRepository {
+    ApiKey save(ApiKey key);
+    Optional<ApiKey> findById(Long id);
     Optional<ApiKey> findByKeyValue(String keyValue);
+    List<ApiKey> findAll();
 }
