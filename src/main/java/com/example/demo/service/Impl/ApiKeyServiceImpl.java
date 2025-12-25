@@ -18,7 +18,6 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public ApiKey createApiKey(ApiKey apiKey) {
-        // Generate a unique 32-char key value if not provided
         if (apiKey.getKeyValue() == null) {
             apiKey.setKeyValue(UUID.randomUUID().toString().replace("-", ""));
         }
