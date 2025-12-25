@@ -13,7 +13,6 @@ public class RegisterRequestDto {
         this.role = role;
     }
 
-    // Getters and Setters
     public String getEmail() { return null; }
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return null; }

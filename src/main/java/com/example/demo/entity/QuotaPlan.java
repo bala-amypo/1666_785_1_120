@@ -25,7 +25,6 @@ public class QuotaPlan {
         this.active = active != null ? active : true;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public String getPlanName() { return planName; }
     public Integer getDailyLimit() { return dailyLimit; }

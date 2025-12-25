@@ -15,7 +15,7 @@ public class AuthResponseDto {
         this.role = role;
     }
 
-    // Getters and Setters
+   
     public String getToken() { return null; }
     public void setToken(String token) { this.token = token; }
     public Long getUserId() { return null; }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuotaPlanRepository extends JpaRepository<QuotaPlan, Long> {
-    // No extra methods required beyond CRUD.
+   
 }

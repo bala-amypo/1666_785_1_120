@@ -21,10 +21,8 @@ public class RateLimitEnforcement {
 
     private String message;
 
-    // No-arg constructor [cite: 96]
     public RateLimitEnforcement() {}
 
-    // Parameterized constructor [cite: 97]
     public RateLimitEnforcement(ApiKey apiKey, LocalDateTime blockedAt, Integer limitExceededBy, String message) {
         this.apiKey = apiKey;
         this.blockedAt = blockedAt;
@@ -32,7 +30,6 @@ public class RateLimitEnforcement {
         this.message = message;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
