@@ -1,45 +1,32 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.KeyExemption;
-import com.example.demo.repository.ApiKeyRepository;
-import com.example.demo.repository.KeyExemptionRepository;
+import com.example.demo.entity.*;
+import com.example.demo.exception.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.KeyExemptionService;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
-@Service
 public class KeyExemptionServiceImpl implements KeyExemptionService {
-    private final KeyExemptionRepository exemptionRepository;
-    private final ApiKeyRepository apiKeyRepository;
 
-    public KeyExemptionServiceImpl(KeyExemptionRepository exemptionRepository, ApiKeyRepository apiKeyRepository) {
-        this.exemptionRepository = exemptionRepository;
-        this.apiKeyRepository = apiKeyRepository;
+    private final KeyExemptionRepository repo;
+    private final ApiKeyRepository keyRepo;
+
+    public KeyExemptionServiceImpl(KeyExemptionRepository repo, ApiKeyRepository keyRepo) {
+        this.repo = repo;
+        this.keyRepo = keyRepo;
     }
 
-    @Override
-    public KeyExemption createExemption(KeyExemption exemption) {
-        return exemptionRepository.save(exemption);
+    public KeyExemption createExemption(KeyExemption ex) {
+        if (ex.getTemporaryExtensionLimit() < 0)
+            throw new BadRequestException("Invalid");
+
+        keyRepo.findById(ex.getApiKey().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
+
+        return repo.save(ex);
     }
 
-    @Override
-    public KeyExemption updateExemption(Long id, KeyExemption exemption) {
-        return exemptionRepository.save(exemption);
-    }
-
-    @Override
-    public Optional<KeyExemption> getExemptionByKey(Long apiKeyId) {
-        return exemptionRepository.findByApiKey_Id(apiKeyId);
-    }
-
-    @Override
-    public List<KeyExemption> getAllExemptions() {
-        return exemptionRepository.findAll();
-    }
-
-    @Override
-    public void deleteExemption(Long id) {
-        exemptionRepository.deleteById(id);
+    public KeyExemption getExemptionByKey(Long keyId) {
+        return repo.findByApiKey_Id(keyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
     }
 }

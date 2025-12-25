@@ -1,39 +1,41 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.ApiUsageLog;
-import com.example.demo.repository.ApiUsageLogRepository;
+import com.example.demo.entity.*;
+import com.example.demo.exception.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.ApiUsageLogService;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
-@Service
 public class ApiUsageLogServiceImpl implements ApiUsageLogService {
-    private final ApiUsageLogRepository usageLogRepository;
 
-    public ApiUsageLogServiceImpl(ApiUsageLogRepository usageLogRepository) {
-        this.usageLogRepository = usageLogRepository;
+    private final ApiUsageLogRepository repo;
+    private final ApiKeyRepository keyRepo;
+
+    public ApiUsageLogServiceImpl(ApiUsageLogRepository repo, ApiKeyRepository keyRepo) {
+        this.repo = repo;
+        this.keyRepo = keyRepo;
     }
 
-    @Override
     public ApiUsageLog logUsage(ApiUsageLog log) {
-        log.setTimestamp(LocalDateTime.now());
-        return usageLogRepository.save(log);
+        if (log.getTimestamp().isAfter(Instant.now()))
+            throw new BadRequestException("Future timestamp");
+
+        keyRepo.findById(log.getApiKey().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
+
+        return repo.save(log);
     }
 
-    @Override
-    public List<ApiUsageLog> getUsageForApiKey(Long keyId) {
-        return usageLogRepository.findByApiKey_Id(keyId);
-    }
-
-    @Override
     public List<ApiUsageLog> getUsageForToday(Long keyId) {
-        LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-        return usageLogRepository.findByApiKey_IdAndTimestampAfter(keyId, startOfDay);
+        return repo.findForKeyBetween(keyId, Instant.now().minusSeconds(86400), Instant.now());
     }
 
-    @Override
     public int countRequestsToday(Long keyId) {
-        return getUsageForToday(keyId).size();
+        return repo.countForKeyBetween(keyId, Instant.now().minusSeconds(86400), Instant.now());
+    }
+
+    public List<ApiUsageLog> getUsageForApiKey(Long keyId) {
+        return repo.findByApiKey_Id(keyId);
     }
 }
