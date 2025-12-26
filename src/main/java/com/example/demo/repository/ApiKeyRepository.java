@@ -5,8 +5,8 @@ import java.util.List;
 import com.example.demo.entity.ApiKey;
 
 public interface ApiKeyRepository {
-    findById(Long id);
-    findByKeyValue(String value);
+     Optional<ApiKey>findById(Long id);
+     Optional<ApiKey>findByKeyValue(String value);
     List<ApiKey> findAll();
     ApiKey save(ApiKey key);
 }
