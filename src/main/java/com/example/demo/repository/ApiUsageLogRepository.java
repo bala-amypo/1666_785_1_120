@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 
-@Repository   // optional but clear
+@Repository  
 public interface ApiUsageLogRepository
         extends JpaRepository<ApiUsageLog, Long>{
 
