@@ -1,9 +1,11 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.QuotaPlan;
-import com.example.demo.exception.*;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.QuotaPlanRepository;
 import com.example.demo.service.QuotaPlanService;
+
 import java.util.List;
 
 public class QuotaPlanServiceImpl implements QuotaPlanService {
@@ -14,22 +16,27 @@ public class QuotaPlanServiceImpl implements QuotaPlanService {
         this.repo = repo;
     }
 
-    public QuotaPlan createQuotaPlan(QuotaPlan p) {
-        if (p.getDailyLimit() <= 0)
+    @Override
+    public QuotaPlan createQuotaPlan(QuotaPlan plan) {
+        if (plan.getDailyLimit() <= 0) {
             throw new BadRequestException("Invalid limit");
-        return repo.save(p);
+        }
+        return repo.save(plan);
     }
 
+    @Override
     public QuotaPlan getQuotaPlanById(Long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Plan not found"));
     }
 
+    @Override
     public void deactivateQuotaPlan(Long id) {
-        QuotaPlan p = getQuotaPlanById(id);
-        p.setActive(false);
+        QuotaPlan plan = getQuotaPlanById(id);
+        plan.setActive(false);
     }
 
+    @Override
     public QuotaPlan updateQuotaPlan(Long id, QuotaPlan updated) {
         QuotaPlan existing = getQuotaPlanById(id);
         existing.setPlanName(updated.getPlanName());
@@ -37,6 +44,7 @@ public class QuotaPlanServiceImpl implements QuotaPlanService {
         return repo.save(existing);
     }
 
+    @Override
     public List<QuotaPlan> getAllPlans() {
         return repo.findAll();
     }

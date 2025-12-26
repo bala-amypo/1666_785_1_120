@@ -13,51 +13,42 @@ import java.util.List;
 public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepo;
-    private final QuotaPlanRepository quotaPlanRepo;
+    private final QuotaPlanRepository quotaRepo;
 
     public ApiKeyServiceImpl(ApiKeyRepository apiKeyRepo,
-                             QuotaPlanRepository quotaPlanRepo) {
+                             QuotaPlanRepository quotaRepo) {
         this.apiKeyRepo = apiKeyRepo;
-        this.quotaPlanRepo = quotaPlanRepo;
+        this.quotaRepo = quotaRepo;
     }
 
     @Override
     public ApiKey createApiKey(ApiKey key) {
-        QuotaPlan plan = quotaPlanRepo.findById(key.getPlan().getId())
+        QuotaPlan plan = quotaRepo.findById(key.getPlan().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Plan not found"));
 
         if (!plan.isActive()) {
             throw new BadRequestException("Plan inactive");
         }
-        return apiKeyRepo.save(key);
-    }
 
-    @Override
-    public ApiKey updateApiKey(Long id, ApiKey key) {
-        ApiKey existing = getApiKeyById(id);
-        existing.setActive(key.isActive());
-        existing.setOwnerId(key.getOwnerId());
-        existing.setPlan(key.getPlan());
-        return apiKeyRepo.save(existing);
+        return apiKeyRepo.save(key);
     }
 
     @Override
     public ApiKey getApiKeyById(Long id) {
         return apiKeyRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("API key not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
     }
 
     @Override
-    public ApiKey getApiKeyByValue(String keyValue) {
-        return apiKeyRepo.findByKeyValue(keyValue)
-                .orElseThrow(() -> new ResourceNotFoundException("API key not found"));
+    public ApiKey getApiKeyByValue(String value) {
+        return apiKeyRepo.findByKeyValue(value)
+                .orElseThrow(() -> new ResourceNotFoundException("Key not found"));
     }
 
     @Override
     public void deactivateApiKey(Long id) {
-        ApiKey k = getApiKeyById(id);
-        k.setActive(false);
-        apiKeyRepo.save(k);
+        ApiKey key = getApiKeyById(id);
+        key.setActive(false);
     }
 
     @Override
