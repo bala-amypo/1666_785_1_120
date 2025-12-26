@@ -8,5 +8,4 @@ import java.util.List;
 @Repository
 public interface RateLimitEnforcementRepository extends JpaRepository<RateLimitEnforcement, Long> {
     List<RateLimitEnforcement> findAllByApiKey_Id(Long apiKeyId);
-
 }

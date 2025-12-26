@@ -1,19 +1,57 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "rate_limit_enforcements")
 public class RateLimitEnforcement {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Assuming a ManyToOne relation with ApiKey
+    @ManyToOne
+    @JoinColumn(name = "api_key_id", nullable = false)
     private ApiKey apiKey;
-    private int limitExceededBy;
-    private String message;
 
-    public ApiKey getApiKey() { return apiKey; }
-    public void setApiKey(ApiKey apiKey) { this.apiKey = apiKey; }
+    private int requestCount;
 
-    public int getLimitExceededBy() { return limitExceededBy; }
-    public void setLimitExceededBy(int limitExceededBy) {
-        this.limitExceededBy = limitExceededBy;
+    private LocalDateTime createdAt;
+
+    public RateLimitEnforcement() {}
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ApiKey getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(ApiKey apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public int getRequestCount() {
+        return requestCount;
+    }
+
+    public void setRequestCount(int requestCount) {
+        this.requestCount = requestCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
