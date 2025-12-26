@@ -14,10 +14,16 @@ public class QuotaPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private boolean active;
+    private String planName;
 
-    // ✅ REQUIRED no-args constructor
+    private int dailyLimit;
+
+    private boolean active = true;
+
+    // ✅ No-args constructor (required by JPA)
     public QuotaPlan() {}
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
@@ -25,6 +31,22 @@ public class QuotaPlan {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPlanName() {
+        return planName;
+    }
+
+    public void setPlanName(String planName) {
+        this.planName = planName;
+    }
+
+    public int getDailyLimit() {
+        return dailyLimit;
+    }
+
+    public void setDailyLimit(int dailyLimit) {
+        this.dailyLimit = dailyLimit;
     }
 
     public boolean isActive() {
