@@ -1,10 +1,12 @@
 package com.example.demo.repository;
 
-import java.util.*;
 import com.example.demo.entity.RateLimitEnforcement;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
 
-public interface RateLimitEnforcementRepository {
-    RateLimitEnforcement save(RateLimitEnforcement e);
-    Optional<RateLimitEnforcement> findById(Long id);
-    List<RateLimitEnforcement> findByApiKey_Id(Long id);
+@Repository
+public interface RateLimitEnforcementRepository extends JpaRepository<RateLimitEnforcement, Long> {
+    List<RateLimitEnforcement> findAllByApiKey_Id(Long apiKeyId);
+
 }

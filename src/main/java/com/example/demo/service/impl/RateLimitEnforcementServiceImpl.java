@@ -23,11 +23,12 @@ public class RateLimitEnforcementServiceImpl implements RateLimitEnforcementServ
 
     @Override
     public RateLimitEnforcement getEnforcementById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Enforcement not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enforcement not found"));
     }
 
     @Override
     public List<RateLimitEnforcement> getEnforcementsForKey(Long id) {
-        return repo.findByApiKeyId(Long id);
+        return repo.findAllByApiKey_Id(id); 
     }
 }
