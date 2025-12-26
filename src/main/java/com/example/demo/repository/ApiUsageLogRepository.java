@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository   // optional but clear
 public interface ApiUsageLogRepository
-        extends JpaRepository<ApiUsageLog, Long> {
+        extends JpaRepository<ApiUsageLog, Long>{
+
 
     List<ApiUsageLog> findByApiKey_Id(Long id);
 
