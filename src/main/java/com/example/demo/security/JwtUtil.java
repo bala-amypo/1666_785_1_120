@@ -1,11 +1,12 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
+import java.util.Map;
 
 public class JwtUtil {
 
-    public String generateToken(java.util.Map<String, Object> claims, String username) {
-        return "DUMMY_TOKEN";
+    public String generateToken(Map<String, Object> claims, String subject) {
+        return "TOKEN";
     }
 
     public Claims getClaims(String token) {
@@ -21,6 +22,6 @@ public class JwtUtil {
     }
 
     public long getExpirationMillis() {
-        return 1000 * 60 * 60;
+        return 3600000;
     }
 }

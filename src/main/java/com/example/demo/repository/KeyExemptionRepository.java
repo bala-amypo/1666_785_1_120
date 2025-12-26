@@ -1,6 +1,9 @@
+package com.example.demo.repository;
+
+import java.util.Optional;
+import com.example.demo.entity.KeyExemption;
+
 public interface KeyExemptionRepository {
-    Optional<KeyExemption> findByApiKey_Id(Long id);
-    Iterable<KeyExemption> findAll();
     KeyExemption save(KeyExemption e);
-    void delete(KeyExemption e);
+    Optional<KeyExemption> findByApiKey_Id(Long id);
 }

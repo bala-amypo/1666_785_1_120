@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 public class QuotaPlan {
-
     private Long id;
     private String planName;
     private int dailyLimit;

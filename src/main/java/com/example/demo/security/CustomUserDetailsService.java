@@ -2,8 +2,9 @@ package com.example.demo.security;
 
 import com.example.demo.entity.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
+
 import org.springframework.security.core.userdetails.*;
-import java.util.Optional;
+import java.util.Collections;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -14,13 +15,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        UserAccount user = repo.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Not found"));
+    public UserDetails loadUserByUsername(String email) {
+        UserAccount user = repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return User.withUsername(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().replace("ROLE_", ""))
-                .build();
+        return new User(user.getEmail(), user.getPassword(), Collections.emptyList());
     }
 }

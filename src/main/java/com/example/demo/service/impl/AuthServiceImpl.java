@@ -5,49 +5,44 @@ import com.example.demo.entity.UserAccount;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.AuthService;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashMap;
+public class AuthServiceImpl {
 
-public class AuthServiceImpl implements AuthService {
-
-    private final UserAccountRepository userRepo;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final UserAccountRepository repo;
+    private final PasswordEncoder encoder;
+    private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserAccountRepository userRepo,
-                           PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager,
+    public AuthServiceImpl(UserAccountRepository repo,
+                           PasswordEncoder encoder,
+                           AuthenticationManager authManager,
                            JwtUtil jwtUtil) {
-        this.userRepo = userRepo;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+        this.repo = repo;
+        this.encoder = encoder;
+        this.authManager = authManager;
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
     public void register(RegisterRequestDto dto) {
-        if (userRepo.existsByEmail(dto.getEmail())) {
-            throw new BadRequestException("Email already exists");
+        if (repo.existsByEmail(dto.getEmail())) {
+            throw new BadRequestException("Email exists");
         }
 
-        UserAccount user = new UserAccount();
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole("ROLE_" + dto.getRole());
-
-        userRepo.save(user);
+        UserAccount u = new UserAccount();
+        u.setEmail(dto.getEmail());
+        u.setPassword(encoder.encode(dto.getPassword()));
+        u.setRole(dto.getRole());
+        repo.save(u);
     }
 
-    @Override
     public AuthResponseDto login(AuthRequestDto dto) {
-        UserAccount user = userRepo.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+        UserAccount user = repo.findByEmail(dto.getEmail())
+                .orElseThrow(RuntimeException::new);
 
-        String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
+        String token = jwtUtil.generateToken(null, user.getEmail());
         return new AuthResponseDto(token);
     }
 }

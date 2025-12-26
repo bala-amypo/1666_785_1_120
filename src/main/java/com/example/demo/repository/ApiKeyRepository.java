@@ -1,6 +1,11 @@
+package com.example.demo.repository;
+
+import java.util.*;
+import com.example.demo.entity.ApiKey;
+
 public interface ApiKeyRepository {
     Optional<ApiKey> findById(Long id);
-    Optional<ApiKey> findByKeyValue(String keyValue);
+    Optional<ApiKey> findByKeyValue(String value);
     List<ApiKey> findAll();
-    ApiKey save(ApiKey k);
+    ApiKey save(ApiKey key);
 }

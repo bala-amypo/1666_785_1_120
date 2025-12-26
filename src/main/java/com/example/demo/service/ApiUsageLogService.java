@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ApiUsageLogService {
     ApiUsageLog logUsage(ApiUsageLog log);
-    List<ApiUsageLog> getUsageForToday(Long keyId);
-    int countRequestsToday(Long keyId);
-    List<ApiUsageLog> getUsageForApiKey(Long keyId);
+    List<ApiUsageLog> getUsageForApiKey(Long id);
+    List<ApiUsageLog> getUsageForToday(Long id);
+    int countRequestsToday(Long id);
 }
