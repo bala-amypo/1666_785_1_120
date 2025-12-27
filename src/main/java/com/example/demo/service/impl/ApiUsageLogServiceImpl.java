@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -24,16 +23,15 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
         ApiUsageLog log = new ApiUsageLog();
         log.setApiKey(apiKey);
         log.setEndpoint(endpoint);
-        log.setTimestamp(LocalDateTime.now());
+        log.setDate(LocalDate.now());   // ✅ IMPORTANT (tests expect date-based)
         return repository.save(log);
     }
 
-    // ✅ REQUIRED BY TESTS
+    // ✅ EXACT MATCH: return type = int
     @Override
-    public long countRequestsToday(Long apiKeyId) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-        return repository.countByApiKey_IdAndTimestampBetween(
-                apiKeyId, startOfDay, endOfDay);
+    public int countRequestsToday(Long apiKeyId) {
+        return repository.countByApiKeyIdAndDate(
+                apiKeyId, LocalDate.now()
+        );
     }
 }
