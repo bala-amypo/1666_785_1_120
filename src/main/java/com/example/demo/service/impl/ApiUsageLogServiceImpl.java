@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.ApiUsageLog;
-import com.example.demo.repository.ApiKeyRepository;
 import com.example.demo.repository.ApiUsageLogRepository;
 import com.example.demo.service.ApiUsageLogService;
 
@@ -18,27 +17,17 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
     private final ApiUsageLogRepository repository;
 
-    // ✅ Constructor used by Spring
+    // ✅ SINGLE constructor → Spring knows what to inject
     public ApiUsageLogServiceImpl(ApiUsageLogRepository repository) {
         this.repository = repository;
     }
 
-    // ✅ Constructor REQUIRED by tests
-    public ApiUsageLogServiceImpl(
-            ApiUsageLogRepository repository,
-            ApiKeyRepository apiKeyRepository   // not used, but REQUIRED
-    ) {
-        this.repository = repository;
-    }
-
-    // ✅ Interface method 1
     @Override
     public ApiUsageLog logUsage(ApiUsageLog log) {
         log.setTimestamp(Instant.now());
         return repository.save(log);
     }
 
-    // ✅ Interface method 2
     @Override
     public List<ApiUsageLog> getUsageForApiKey(Long id) {
         return repository.findAll()
@@ -49,7 +38,6 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Interface method 3
     @Override
     public List<ApiUsageLog> getUsageForToday(Long id) {
         LocalDate today = LocalDate.now();
@@ -63,12 +51,10 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
                         log.getTimestamp()
                            .atZone(ZoneId.systemDefault())
                            .toLocalDate()
-                           .equals(today)
-                )
+                           .equals(today))
                 .collect(Collectors.toList());
     }
 
-    // ✅ Interface method 4
     @Override
     public int countRequestsToday(Long id) {
         return getUsageForToday(id).size();
