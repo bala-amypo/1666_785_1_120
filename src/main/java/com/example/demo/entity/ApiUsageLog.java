@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.Instant;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class ApiUsageLog {
@@ -11,14 +11,12 @@ public class ApiUsageLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "api_key_id")
     private ApiKey apiKey;
 
     private String endpoint;
 
-    private LocalDateTime timestamp;
-
-    /* ===== GETTERS & SETTERS ===== */
+    // ✅ MUST be Instant (tests use Instant)
+    private Instant timestamp;
 
     public Long getId() {
         return id;
@@ -40,11 +38,11 @@ public class ApiUsageLog {
         this.endpoint = endpoint;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 }

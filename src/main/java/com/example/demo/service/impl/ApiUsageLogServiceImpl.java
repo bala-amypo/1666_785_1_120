@@ -60,4 +60,5 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
         return getUsageForToday(id).size();
     }
     
+    
 }
