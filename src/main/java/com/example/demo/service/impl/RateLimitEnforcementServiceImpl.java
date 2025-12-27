@@ -25,6 +25,11 @@ public class RateLimitEnforcementServiceImpl
     }
 
     @Override
+    public RateLimitEnforcement getEnforcementById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<RateLimitEnforcement> getEnforcementsForKey(Long apiKeyId) {
         return repository.findByApiKey_Id(apiKeyId);
     }

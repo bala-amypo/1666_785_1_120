@@ -1,70 +1,29 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.ApiKey;
-import com.example.demo.entity.ApiUsageLog;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.ApiKeyRepository;
-import com.example.demo.repository.ApiUsageLogRepository;
-import com.example.demo.service.ApiUsageLogService;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
+import com.example.demo.entity.ApiKey;
+import com.example.demo.entity.ApiUsageLog;
+import com.example.demo.repository.ApiUsageLogRepository;
+import com.example.demo.service.ApiUsageLogService;
 
-@Service   
+@Service
 public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
-    private final ApiUsageLogRepository usageRepo;
-    private final ApiKeyRepository apiKeyRepo;
+    private final ApiUsageLogRepository repository;
 
-    public ApiUsageLogServiceImpl(ApiUsageLogRepository usageRepo,
-                                  ApiKeyRepository apiKeyRepo) {
-        this.usageRepo = usageRepo;
-        this.apiKeyRepo = apiKeyRepo;
+    public ApiUsageLogServiceImpl(ApiUsageLogRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public ApiUsageLog logUsage(ApiUsageLog log) {
-
-        ApiKey key = apiKeyRepo.findById(log.getApiKey().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("API Key not found"));
-
-        if (log.getTimestamp().isAfter(Instant.now())) {
-            throw new BadRequestException("Future timestamp not allowed");
-        }
-
-        log.setApiKey(key);
-        return usageRepo.save(log);
-    }
-
-    @Override
-    public List<ApiUsageLog> getUsageForApiKey(Long id) {
-        return usageRepo.findByApiKey_Id(id);
-    }
-
-    @Override
-    public List<ApiUsageLog> getUsageForToday(Long id) {
-        LocalDate today = LocalDate.now();
-        Instant start = today.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        Instant end = today.plusDays(1)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-
-        return usageRepo.findForKeyBetween(id, start, end);
-    }
-
-    @Override
-    public int countRequestsToday(Long id) {
-        LocalDate today = LocalDate.now();
-        Instant start = today.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        Instant end = today.plusDays(1)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-
-        return usageRepo.countForKeyBetween(id, start, end);
+    public ApiUsageLog logUsage(ApiKey apiKey, String endpoint) {
+        ApiUsageLog log = new ApiUsageLog();
+        log.setApiKey(apiKey);
+        log.setEndpoint(endpoint);
+        log.setTimestamp(LocalDateTime.now()); // ✅ FIX HERE
+        return repository.save(log);
     }
 }
