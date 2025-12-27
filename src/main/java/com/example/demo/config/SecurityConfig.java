@@ -15,15 +15,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // Disable CSRF for REST APIs
+           
             .csrf(csrf -> csrf.disable())
-
-            // Stateless session (important for API/JWT/API-key)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 // Swagger & OpenAPI
                 .requestMatchers(
@@ -39,7 +36,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
-            // Disable default login & basic auth (API use-case)
+          
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
 
