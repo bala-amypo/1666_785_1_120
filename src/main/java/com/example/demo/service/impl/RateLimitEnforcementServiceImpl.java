@@ -1,24 +1,31 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.RateLimitEnforcement;
-import com.example.demo.repository.RateLimitEnforcementRepository;
-import com.example.demo.repository.ApiKeyRepository;
-import com.example.demo.service.RateLimitEnforcementService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class RateLimitEnforcementServiceImpl implements RateLimitEnforcementService {
+import org.springframework.stereotype.Service;
 
-    private final RateLimitEnforcementRepository enforcementRepository;
-    private final ApiKeyRepository apiKeyRepository;
+import com.example.demo.entity.RateLimitEnforcement;
+import com.example.demo.repository.RateLimitEnforcementRepository;
+import com.example.demo.service.RateLimitEnforcementService;
+
+@Service
+public class RateLimitEnforcementServiceImpl
+        implements RateLimitEnforcementService {
+
+    private final RateLimitEnforcementRepository repository;
 
     public RateLimitEnforcementServiceImpl(
-            RateLimitEnforcementRepository enforcementRepository,
-            ApiKeyRepository apiKeyRepository) {
+            RateLimitEnforcementRepository repository) {
+        this.repository = repository;
+    }
 
-        this.enforcementRepository = enforcementRepository;
-        this.apiKeyRepository = apiKeyRepository;
+    @Override
+    public RateLimitEnforcement save(RateLimitEnforcement enforcement) {
+        return repository.save(enforcement);
+    }
+
+    @Override
+    public List<RateLimitEnforcement> getEnforcementsForKey(Long apiKeyId) {
+        return repository.findByApiKey_Id(apiKeyId);
     }
 }
