@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.ApiUsageLog;
+import com.example.demo.repository.ApiKeyRepository;
 import com.example.demo.repository.ApiUsageLogRepository;
 import com.example.demo.service.ApiUsageLogService;
 
@@ -17,14 +18,23 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
     private final ApiUsageLogRepository repository;
 
+    // ✅ Constructor used by Spring
     public ApiUsageLogServiceImpl(ApiUsageLogRepository repository) {
         this.repository = repository;
     }
 
-    // ✅ Interface method 1 (FIXED)
+    // ✅ Constructor REQUIRED by tests
+    public ApiUsageLogServiceImpl(
+            ApiUsageLogRepository repository,
+            ApiKeyRepository apiKeyRepository   // not used, but REQUIRED
+    ) {
+        this.repository = repository;
+    }
+
+    // ✅ Interface method 1
     @Override
     public ApiUsageLog logUsage(ApiUsageLog log) {
-        log.setTimestamp(Instant.now());   // ✅ REQUIRED BY TESTS
+        log.setTimestamp(Instant.now());
         return repository.save(log);
     }
 
@@ -49,7 +59,7 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
                 .filter(log ->
                         log.getApiKey() != null &&
                         log.getApiKey().getId().equals(id) &&
-                        log.getTimestamp() != null &&   // safety
+                        log.getTimestamp() != null &&
                         log.getTimestamp()
                            .atZone(ZoneId.systemDefault())
                            .toLocalDate()
