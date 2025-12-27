@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.ApiKey;
 import com.example.demo.entity.ApiUsageLog;
+import com.example.demo.repository.ApiKeyRepository;
 import com.example.demo.repository.ApiUsageLogRepository;
 import com.example.demo.service.ApiUsageLogService;
 
@@ -16,46 +17,44 @@ import com.example.demo.service.ApiUsageLogService;
 public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
     private final ApiUsageLogRepository repository;
+    private final ApiKeyRepository apiKeyRepository;
 
-    public ApiUsageLogServiceImpl(ApiUsageLogRepository repository) {
+    // ✅ constructor EXACTLY as tests expect
+    public ApiUsageLogServiceImpl(ApiUsageLogRepository repository,
+                                  ApiKeyRepository apiKeyRepository) {
         this.repository = repository;
+        this.apiKeyRepository = apiKeyRepository;
     }
 
-    // ✅ Interface method 1
     @Override
     public ApiUsageLog logUsage(ApiUsageLog log) {
+        log.setTimestamp(LocalDateTime.now()); // tests expect LocalDateTime
         return repository.save(log);
     }
 
-    // ✅ Interface method 2
     @Override
     public List<ApiUsageLog> getUsageForApiKey(Long id) {
         return repository.findAll()
                 .stream()
-                .filter(log -> log.getApiKey() != null
-                        && log.getApiKey().getId().equals(id))
+                .filter(l -> l.getApiKey() != null
+                        && l.getApiKey().getId().equals(id))
                 .collect(Collectors.toList());
     }
 
-    // ✅ Interface method 3
     @Override
     public List<ApiUsageLog> getUsageForToday(Long id) {
         LocalDate today = LocalDate.now();
 
         return repository.findAll()
                 .stream()
-                .filter(log ->
-                        log.getApiKey() != null &&
-                        log.getApiKey().getId().equals(id) &&
-                        log.getTimestamp()
-                           .atZone(ZoneId.systemDefault())
-                           .toLocalDate()
-                           .equals(today)
+                .filter(l ->
+                        l.getApiKey() != null &&
+                        l.getApiKey().getId().equals(id) &&
+                        l.getTimestamp().toLocalDate().equals(today)
                 )
                 .collect(Collectors.toList());
     }
 
-    // ✅ Interface method 4
     @Override
     public int countRequestsToday(Long id) {
         return getUsageForToday(id).size();
