@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RateLimitEnforcementRepository extends JpaRepository<RateLimitEnforcement, Long> {
-    List<RateLimitEnforcement> findAllByApiKey_Id(Long apiKeyId);
+public interface RateLimitEnforcementRepository
+        extends JpaRepository<RateLimitEnforcement, Long> {
+
+    List<RateLimitEnforcement> findByApiKey_Id(long apiKeyId);
 }
+
