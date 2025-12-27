@@ -1,22 +1,48 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
-@Table(name = "api_usage_logs")
+@Table(name = "api_usage_log")
 public class ApiUsageLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_key_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "api_key_id")
     private ApiKey apiKey;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Instant timestamp;
+
+    // ✅ REQUIRED: no-args constructor
+    public ApiUsageLog() {}
 
     // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ApiKey getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(ApiKey apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
+    }
 }
