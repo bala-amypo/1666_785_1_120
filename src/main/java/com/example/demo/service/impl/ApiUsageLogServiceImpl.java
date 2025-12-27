@@ -1,6 +1,9 @@
 package com.example.demo.service.impl;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -18,20 +21,43 @@ public class ApiUsageLogServiceImpl implements ApiUsageLogService {
         this.repository = repository;
     }
 
+    // ✅ Interface method 1
     @Override
-    public ApiUsageLog logUsage(ApiKey apiKey, String endpoint) {
-        ApiUsageLog log = new ApiUsageLog();
-        log.setApiKey(apiKey);
-        log.setEndpoint(endpoint);
-        log.setDate(LocalDate.now());   // ✅ IMPORTANT (tests expect date-based)
+    public ApiUsageLog logUsage(ApiUsageLog log) {
         return repository.save(log);
     }
 
-    // ✅ EXACT MATCH: return type = int
+    // ✅ Interface method 2
     @Override
-    public int countRequestsToday(Long apiKeyId) {
-        return repository.countByApiKeyIdAndDate(
-                apiKeyId, LocalDate.now()
-        );
+    public List<ApiUsageLog> getUsageForApiKey(Long id) {
+        return repository.findAll()
+                .stream()
+                .filter(log -> log.getApiKey() != null
+                        && log.getApiKey().getId().equals(id))
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Interface method 3
+    @Override
+    public List<ApiUsageLog> getUsageForToday(Long id) {
+        LocalDate today = LocalDate.now();
+
+        return repository.findAll()
+                .stream()
+                .filter(log ->
+                        log.getApiKey() != null &&
+                        log.getApiKey().getId().equals(id) &&
+                        log.getTimestamp()
+                           .atZone(ZoneId.systemDefault())
+                           .toLocalDate()
+                           .equals(today)
+                )
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Interface method 4
+    @Override
+    public int countRequestsToday(Long id) {
+        return getUsageForToday(id).size();
     }
 }
