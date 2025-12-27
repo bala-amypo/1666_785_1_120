@@ -19,8 +19,10 @@ public class RateLimitEnforcementServiceImpl
         this.repository = repository;
     }
 
+    // ✅ EXACT METHOD NAME EXPECTED BY TESTS
     @Override
-    public RateLimitEnforcement save(RateLimitEnforcement enforcement) {
+    public RateLimitEnforcement createEnforcement(
+            RateLimitEnforcement enforcement) {
         return repository.save(enforcement);
     }
 
