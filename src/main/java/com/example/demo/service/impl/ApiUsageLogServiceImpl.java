@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-@Service   // ✅ THIS FIXES THE ERROR
+@Service   
 public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
     private final ApiUsageLogRepository usageRepo;
