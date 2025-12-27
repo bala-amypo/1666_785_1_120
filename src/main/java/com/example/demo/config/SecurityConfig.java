@@ -11,35 +11,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+   @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/api/usage-logs"
+            ).permitAll()
+            .anyRequest().authenticated()
+        );
 
-        http
-           
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+    return http.build();
+}
 
-            .authorizeHttpRequests(auth -> auth
-                // Swagger & OpenAPI
-                .requestMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html"
-                ).permitAll()
-
-                // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-
-                // Secure all other endpoints
-                .anyRequest().authenticated()
-            )
-
-          
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable());
-
-        return http.build();
-    }
 }
