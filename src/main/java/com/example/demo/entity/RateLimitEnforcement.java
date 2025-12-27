@@ -14,7 +14,16 @@ public class RateLimitEnforcement {
 
     private boolean blocked;
 
-    // ✅ REQUIRED by tests
+    // ✅ REQUIRED BY TESTS
+    private int limitExceededBy;
+
+    // ✅ REQUIRED BY TESTS
+    private String message;
+
+    public Long getId() {
+        return id;
+    }
+
     public ApiKey getApiKey() {
         return apiKey;
     }
@@ -23,15 +32,29 @@ public class RateLimitEnforcement {
         this.apiKey = apiKey;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public boolean isBlocked() {
         return blocked;
     }
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    // ✅ TEST METHODS
+    public int getLimitExceededBy() {
+        return limitExceededBy;
+    }
+
+    public void setLimitExceededBy(int limitExceededBy) {
+        this.limitExceededBy = limitExceededBy;
+    }
+
+    // ✅ TEST METHODS
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
