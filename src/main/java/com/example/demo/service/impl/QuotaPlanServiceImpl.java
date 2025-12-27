@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ✅ THIS IS THE FIX
+@Service   
 public class QuotaPlanServiceImpl implements QuotaPlanService {
 
     private final QuotaPlanRepository repo;
