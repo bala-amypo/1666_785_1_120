@@ -1,62 +1,55 @@
 package com.example.demo.service.impl;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.example.demo.entity.ApiUsageLog;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.ApiKeyRepository;
 import com.example.demo.repository.ApiUsageLogRepository;
 import com.example.demo.service.ApiUsageLogService;
+import org.springframework.stereotype.Service;
 
+
+import java.time.*;
+import java.util.List;
 @Service
 public class ApiUsageLogServiceImpl implements ApiUsageLogService {
 
-    private final ApiUsageLogRepository repository;
+    private final ApiUsageLogRepository repo;
+    private final ApiKeyRepository keyRepo;
 
-    // ✅ Constructor injection, only the repository required
-    public ApiUsageLogServiceImpl(ApiUsageLogRepository repository) {
-        this.repository = repository;
+    public ApiUsageLogServiceImpl(ApiUsageLogRepository repo, ApiKeyRepository keyRepo) {
+        this.repo = repo;
+        this.keyRepo = keyRepo;
     }
 
-    // ✅ Logs usage and sets timestamp
     @Override
     public ApiUsageLog logUsage(ApiUsageLog log) {
-        log.setTimestamp(Instant.now()); // required by tests
-        return repository.save(log);
+        if (log.getTimestamp().isAfter(Instant.now())) {
+            throw new BadRequestException("Future timestamp");
+        }
+
+        keyRepo.findById(log.getApiKey().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("ApiKey not found"));
+
+        return repo.save(log);
     }
 
-    // ✅ Returns all logs for a specific API key
     @Override
-    public List<ApiUsageLog> getUsageForApiKey(Long id) {
-        return repository.findAll()
-                .stream()
-                .filter(log -> log.getApiKey() != null && log.getApiKey().getId().equals(id))
-                .collect(Collectors.toList());
+    public List<ApiUsageLog> getUsageForApiKey(Long keyId) {
+        return repo.findByApiKey_Id(keyId);
     }
 
-    // ✅ Returns only today's logs for a specific API key
     @Override
-    public List<ApiUsageLog> getUsageForToday(Long id) {
-        LocalDate today = LocalDate.now();
-        return repository.findAll()
-                .stream()
-                .filter(log -> log.getApiKey() != null
-                        && log.getApiKey().getId().equals(id)
-                        && log.getTimestamp() != null
-                        && log.getTimestamp()
-                              .atZone(ZoneId.systemDefault())
-                              .toLocalDate()
-                              .equals(today))
-                .collect(Collectors.toList());
+    public List<ApiUsageLog> getUsageForToday(Long keyId) {
+        Instant start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant end = start.plus(Duration.ofDays(1));
+        return repo.findForKeyBetween(keyId, start, end);
     }
 
-    // ✅ Returns the count of requests for today
     @Override
-    public int countRequestsToday(Long id) {
-        return getUsageForToday(id).size();
+    public int countRequestsToday(Long keyId) {
+        Instant start = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant end = start.plus(Duration.ofDays(1));
+        return repo.countForKeyBetween(keyId, start, end);
     }
 }
