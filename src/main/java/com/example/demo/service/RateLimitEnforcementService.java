@@ -6,5 +6,5 @@ import java.util.List;
 public interface RateLimitEnforcementService {
     RateLimitEnforcement createEnforcement(RateLimitEnforcement e);
     RateLimitEnforcement getEnforcementById(Long id);
-    List<RateLimitEnforcement> getEnforcementsForKey(Long id);
+    List<RateLimitEnforcement> getEnforcementsForKey(Long keyId);
 }
