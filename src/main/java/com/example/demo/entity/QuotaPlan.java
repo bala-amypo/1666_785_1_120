@@ -1,13 +1,9 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "quota_plan")
+@Table(name = "quota_plans")
 public class QuotaPlan {
 
     @Id
@@ -15,21 +11,16 @@ public class QuotaPlan {
     private Long id;
 
     private String planName;
-
-    private int dailyLimit;
-
+    private Integer dailyLimit;
     private boolean active = true;
 
-    // ✅ No-args constructor (required by JPA)
     public QuotaPlan() {}
-
-    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Long id) {      
         this.id = id;
     }
 
@@ -41,11 +32,11 @@ public class QuotaPlan {
         this.planName = planName;
     }
 
-    public int getDailyLimit() {
+    public Integer getDailyLimit() {
         return dailyLimit;
     }
 
-    public void setDailyLimit(int dailyLimit) {
+    public void setDailyLimit(Integer dailyLimit) {
         this.dailyLimit = dailyLimit;
     }
 

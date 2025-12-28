@@ -3,36 +3,27 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "api_key")
+@Table(name = "api_keys")
 public class ApiKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String keyValue;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "plan_id")
-    private QuotaPlan plan;
-
-    @Column(nullable = false)
+    private Long ownerId;
     private boolean active = true;
 
-    @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    private QuotaPlan plan;
 
-    // ✅ REQUIRED no-args constructor
     public ApiKey() {}
-
-    // ---------- getters & setters ----------
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Long id) {      
         this.id = id;
     }
 
@@ -44,12 +35,12 @@ public class ApiKey {
         this.keyValue = keyValue;
     }
 
-    public QuotaPlan getPlan() {
-        return plan;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setPlan(QuotaPlan plan) {
-        this.plan = plan;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public boolean isActive() {
@@ -60,11 +51,11 @@ public class ApiKey {
         this.active = active;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public QuotaPlan getPlan() {
+        return plan;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setPlan(QuotaPlan plan) {
+        this.plan = plan;
     }
 }

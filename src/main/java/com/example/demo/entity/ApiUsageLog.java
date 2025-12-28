@@ -1,33 +1,30 @@
 package com.example.demo.entity;
 
-import java.time.Instant;
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
+@Table(name = "api_usage_logs")
 public class ApiUsageLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String endpoint;
+    private Instant timestamp;
+
     @ManyToOne
     private ApiKey apiKey;
 
-    private String endpoint;
-
-    // ✅ MUST be Instant (tests use Instant)
-    private Instant timestamp;
+    public ApiUsageLog() {}
 
     public Long getId() {
         return id;
     }
 
-    public ApiKey getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(ApiKey apiKey) {
-        this.apiKey = apiKey;
+    public void setId(Long id) {      
+        this.id = id;
     }
 
     public String getEndpoint() {
@@ -44,5 +41,13 @@ public class ApiUsageLog {
 
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public ApiKey getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(ApiKey apiKey) {
+        this.apiKey = apiKey;
     }
 }
