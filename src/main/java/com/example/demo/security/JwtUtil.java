@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
@@ -17,13 +18,12 @@ public class JwtUtil {
     private final long expirationMs;
 
     public JwtUtil() {
-        // SAME secret everywhere — length ≥ 32 bytes
         String secret = "MySuperSecretJwtKeyForEmployeeSkillMatrix12345";
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.expirationMs = 3600000; // 1 hour
     }
 
-    /* ===================== TOKEN CREATION ===================== */
+    /* ===================== EXISTING METHOD (DO NOT REMOVE) ===================== */
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -34,7 +34,19 @@ public class JwtUtil {
                 .compact();
     }
 
-    /* ===================== TOKEN VALIDATION ===================== */
+    /* ===================== NEW METHOD (FIXES YOUR ERROR) ===================== */
+
+    public String generateToken(Map<String, Object> claims, String username) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(key)
+                .compact();
+    }
+
+    /* ===================== VALIDATION ===================== */
 
     public boolean validateToken(String token) {
         try {
@@ -48,7 +60,7 @@ public class JwtUtil {
         }
     }
 
-    /* ===================== TOKEN DATA ===================== */
+    /* ===================== EXTRACTION ===================== */
 
     public String extractUsername(String token) {
         Claims claims = Jwts.parserBuilder()
