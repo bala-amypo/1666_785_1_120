@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthenticationFilter;
+import com.example.demo.security.JwtUtil;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,53 +17,47 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public SecurityConfig(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
-    // Password encryption
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtil);
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Authentication manager (needed for login)
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
-    // Main security configuration
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // Disable CSRF (JWT is stateless)
             .csrf(csrf -> csrf.disable())
-
-            // Stateless session
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-
-            // Authorization rules
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
                             "/auth/**",
                             "/swagger-ui/**",
-                            "/swagger-ui.html",
                             "/v3/api-docs/**",
-                            "/v3/api-docs.yaml"
+                            "/simple-status"
                     ).permitAll()
                     .anyRequest().authenticated()
             )
-
-            // JWT filter
             .addFilterBefore(
-                    jwtAuthenticationFilter,
+                    jwtAuthenticationFilter(),
                     UsernamePasswordAuthenticationFilter.class
             );
 
