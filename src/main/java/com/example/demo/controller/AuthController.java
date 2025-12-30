@@ -4,11 +4,13 @@ import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirements
 public class AuthController {
 
     private final AuthService authService;
